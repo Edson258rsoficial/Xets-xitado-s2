@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID_XITECH_ELITE // FULL SUITE</title>
+    <style>
+        :root { --red: #ff0000; --dark: #050505; --gray: #151515; --green: #00ff00; }
+        body { 
+            background-color: var(--dark); 
+            color: #eee; 
+            font-family: 'Consolas', monospace; 
+            margin: 0; 
+            padding: 15px; 
+            border: 2px solid var(--red);
+            box-shadow: 0 0 15px var(--red);
+            border-radius: 8px;
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+        }
+        .title { 
+            color: var(--red); 
+            font-weight: bold; 
+            font-size: 18px; 
+            text-shadow: 0 0 5px var(--red);
+        }
+        .status { 
+            color: var(--green); 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        /* Sistema de Abas */
+        .tabs { 
+            display: flex; 
+            border-bottom: 1px solid #333; 
+            margin-bottom: 15px; 
+        }
+        .tab-btn { 
+            background: none; 
+            border: none; 
+            color: #aaa; 
+            padding: 10px; 
+            cursor: pointer; 
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+        }
+        .tab-btn.active { 
+            color: var(--red); 
+            border-bottom: 2px solid var(--red); 
+        }
+        .tab-content { 
+            display: none; 
+            background-color: var(--gray); 
+            border: 1px solid #222; 
+            border-radius: 5px; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        .section-title { 
+            color: var(--red); 
+            font-size: 14px; 
+            margin-bottom: 12px; 
+            font-weight: bold; 
+            border-left: 3px solid var(--red);
+            padding-left: 8px;
+        }
+        .row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
+        }
+        .label { 
+            color: #ccc; 
+            font-size: 12px; 
+        }
+        input[type=range] { 
+            width: 100%; 
+            accent-color: var(--red); 
+            height: 6px;
+        }
+        .master-btn { 
+            background: linear-gradient(90deg, #ff0000, #8b0000); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            width: 100%; 
+            font-size: 18px; 
+            font-weight: bold; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            box-shadow: 0 0 10px var(--red);
+            transition: 0.2s;
+            font-family: 'Consolas', monospace;
+            margin-top: 10px;
+        }
+        .master-btn:active { 
+            transform: scale(0.98); 
+            box-shadow: 0 0 20px var(--red);
+        }
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--red);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .terminal {
+            background-color: #000;
+            border: 1px solid #333;
+            height: 60px;
+            overflow-y: auto;
+            font-size: 10px;
+            padding: 5px;
+            margin-top: 10px;
+            color: var(--green);
+        }
+    </style>
+</head>
+<body>
+
+    <button class="floating-btn" onclick="toggleMasterSystem()" id="floatBtn">ON</button>
+
+    <div class="header">
+        <div class="title">VOID_XITECH_ELITE</div>
+        <div class="status" id="syncStatus">[ SYNC: STANDBY ]</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'aimTab')">AIMBOT</button>
+        <button class="tab-btn" onclick="openTab(event, 'visualTab')">ESP/WALL</button>
+        <button class="tab-btn" onclick="openTab(event, 'moveTab')">MOVE</button>
+        <button class="tab-btn" onclick="openTab(event, 'secTab')">SECURITY</button>
+    </div>
+
+    <!-- ABA: AIMBOT -->
+    <div id="aimTab" class="tab-content active">
+        <div class="section-title">🎯 AIMBOT CORE</div>
+        <div class="row">
+            <div class="label">Aimbot Active</div>
+            <input type="checkbox" id="aimbotActive" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Aim Assist</div>
+            <input type="checkbox" id="aimAssist" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Aim Target (Cabeça/Peito)</div>
+            <select id="aimTarget" style="background: #000; color: #fff; border: 1px solid #333; padding: 5px;">
+                <option value="HEAD_ONLY">HEAD ONLY (100% HS)</option>
+                <option value="HEAD_CHEST">HEAD/CHEST</option>
+            </select>
+        </div>
+        <div class="row">
+            <div class="label">Aim FOV (Raio de Detecção)</div>
+            <div class="label" id="fovVal">180°</div>
+        </div>
+        <input type="range" id="fov" min="30" max="360" value="180" oninput="updateVal('fov', this.value)">
+        <div class="row">
+            <div class="label">Snap Force (Força de Estalo)</div>
+            <div class="label" id="snapVal">90%</div>
+        </div>
+        <input type="range" id="snap" min="0" max="100" value="90" oninput="updateVal('snap', this.value)">
+    </div>
+
+    <!-- ABA: VISUAL -->
+    <div id="visualTab" class="tab-content">
+        <div class="section-title">👁️ ESP / WALLHACK</div>
+        <div class="row">
+            <div class="label">Player/Enemy ESP</div>
+            <input type="checkbox" id="espActive" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Health/Distance</div>
+            <input type="checkbox" id="healthDist" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Crosshair (Mira Central)</div>
+            <input type="checkbox" id="crosshair" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Radar (Minimapa Inteligente)</div>
+            <input type="checkbox" id="radar" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+    </div>
+
+    <!-- ABA: MOVIMENTO -->
+    <div id="moveTab" class="tab-content">
+        <div class="section-title">🏃 MOVEMENT & COMBAT</div>
+        <div class="row">
+            <div class="label">No Recoil (Anulação de Recuo)</div>
+            <input type="checkbox" id="noRecoil" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">No Spread (Dispersão Zero)</div>
+            <input type="checkbox" id="noSpread" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Speed (Aceleração de Corrida)</div>
+            <input type="checkbox" id="speed" style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Teleport / Fly</div>
+            <input type="checkbox" id="tpFly" style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+    </div>
+
+    <!-- ABA: SEGURANÇA -->
+    <div id="secTab" class="tab-content">
+        <div class="section-title">🛡️ ANTI-BAN / DETECTION</div>
+        <div class="row">
+            <div class="label">Anti-detection Protocol</div>
+            <input type="checkbox" id="antiDetect" checked style="accent-color: var(--red); width: 20px; height: 20px;">
+        </div>
+        <div class="row">
+            <div class="label">Humanization Jitter</div>
+            <div class="label" id="jitterVal">2%</div>
+        </div>
+        <input type="range" id="jitter" min="0" max="10" value="2" oninput="updateVal('jitter', this.value)">
+        <div class="row">
+            <div class="label">Sensibilidade de Mira</div>
+            <div class="label" id="sensVal">150</div>
+        </div>
+        <input type="range" id="sens" min="1" max="200" value="150" oninput="updateVal('sens', this.value)">
+    </div>
+
+    <button class="master-btn" onclick="deploySystem()">DEPLOY GOD_MODE // ABRIR JOGO</button>
+
+    <div class="terminal" id="terminal">
+        <div>[00:00:00] SISTEMA INICIALIZADO.</div>
+        <div>[00:00:00] FULL SUITE LOADED.</div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function updateVal(id, val) {
+            document.getElementById(id + 'Val').innerText = val + (id === 'fov' ? '°' : (id === 'jitter' ? '%' : ''));
+            saveConfig();
+        }
+
+        function saveConfig() {
+            const config = {
+                aimbotActive: document.getElementById('aimbotActive').checked,
+                aimAssist: document.getElementById('aimAssist').checked,
+                aimTarget: document.getElementById('aimTarget').value,
+                fov: document.getElementById('fov').value,
+                snap: document.getElementById('snap').value,
+                espActive: document.getElementById('espActive').checked,
+                healthDist: document.getElementById('healthDist').checked,
+                crosshair: document.getElementById('crosshair').checked,
+                radar: document.getElementById('radar').checked,
+                noRecoil: document.getElementById('noRecoil').checked,
+                noSpread: document.getElementById('noSpread').checked,
+                speed: document.getElementById('speed').checked,
+                tpFly: document.getElementById('tpFly').checked,
+                antiDetect: document.getElementById('antiDetect').checked,
+                jitter: document.getElementById('jitter').value,
+                sens: document.getElementById('sens').value
+            };
+            localStorage.setItem('void_full_suite', JSON.stringify(config));
+        }
+
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('void_full_suite');
+            if (saved) {
+                const config = JSON.parse(saved);
+                document.getElementById('aimbotActive').checked = config.aimbotActive;
+                document.getElementById('aimAssist').checked = config.aimAssist;
+                document.getElementById('aimTarget').value = config.aimTarget;
+                document.getElementById('fov').value = config.fov;
+                document.getElementById('snap').value = config.snap;
+                document.getElementById('espActive').checked = config.espActive;
+                document.getElementById('healthDist').checked = config.healthDist;
+                document.getElementById('crosshair').checked = config.crosshair;
+                document.getElementById('radar').checked = config.radar;
+                document.getElementById('noRecoil').checked = config.noRecoil;
+                document.getElementById('noSpread').checked = config.noSpread;
+                document.getElementById('speed').checked = config.speed;
+                document.getElementById('tpFly').checked = config.tpFly;
+                document.getElementById('antiDetect').checked = config.antiDetect;
+                document.getElementById('jitter').value = config.jitter;
+                document.getElementById('sens').value = config.sens;
+                updateVal('fov', config.fov);
+                updateVal('snap', config.snap);
+                updateVal('jitter', config.jitter);
+                updateVal('sens', config.sens);
+                logMessage("FULL SUITE RESTAURADA.");
+            }
+        });
+
+        function logMessage(msg) {
+            const terminal = document.getElementById('terminal');
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const line = document.createElement('div');
+            line.innerText = `[${time}] ${msg}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function toggleMasterSystem() {
+            const btn = document.getElementById('floatBtn');
+            const status = document.getElementById('syncStatus');
+            if (btn.innerText === "ON") {
+                btn.innerText = "OFF";
+                btn.style.background = "#333";
+                status.innerText = "[ SYSTEM: PAUSED ]";
+                status.style.color = "#aaa";
+            } else {
+                btn.innerText = "ON";
+                btn.style.background = "var(--red)";
+                status.innerText = "[ TARGET: LOCKED ]";
+                status.style.color = "#FF0000";
+            }
+        }
+
+        function deploySystem() {
+            logMessage("INICIANDO INJEÇÃO FULL SUITE...");
+            logMessage(`AIM: ${document.getElementById('aimTarget').value} | FOV: ${document.getElementById('fov').value}°`);
+            logMessage(`ESP: ${document.getElementById('espActive').checked ? 'ATIVO' : 'OFF'} | RECOIL: ${document.getElementById('noRecoil').checked ? 'ZERO' : 'OFF'}`);
+            if (navigator.vibrate) navigator.vibrate(300);
+            
+            const gameLink = "freefire://";
+            setTimeout(() => {
+                logMessage("GOD_MODE: ATIVADO. ABRE O JOGO.");
+                window.location.href = gameLink;
+            }, 1500);
+        }
